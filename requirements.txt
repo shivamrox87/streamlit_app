@@ -2,4 +2,4 @@ streamlit
 pytube
 openai
 assemblyai
-whsiper
+openai-whisper
