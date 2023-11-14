@@ -214,20 +214,7 @@ def get_binary_file_downloader_html(bin_data, file_label='File'):
     href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{file_label}.zip">Click here to download {file_label}</a>'
     return href
     
-with st.sidebar:
-    st.title('🤗💬 HugChat')
-    if ('EMAIL' in st.secrets) and ('PASS' in st.secrets):
-        st.success('HuggingFace Login credentials already provided!', icon='✅')
-        hf_email = st.secrets['EMAIL']
-        hf_pass = st.secrets['PASS']
-    else:
-        hf_email = st.text_input('Enter E-mail:', type='password')
-        hf_pass = st.text_input('Enter password:', type='password')
-        if not (hf_email and hf_pass):
-            st.warning('Please enter your credentials!', icon='⚠️')
-        else:
-            st.success('Proceed to entering your prompt message!', icon='👉')
-    st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-an-llm-powered-chatbot-with-streamlit/)!')
+
 def main():
     st.title("YouTube to doc")
 
