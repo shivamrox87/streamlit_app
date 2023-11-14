@@ -223,18 +223,18 @@ def get_binary_file_downloader_html(bin_data, file_label='File'):
     
 
 def main():
-    st.sidebar.header("API Keys")
+    st.sidebar.title("API Keys")
+
+    openai_api_key = st.sidebar.text_input("Enter OpenAI API Key", type="password")
+    assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key", type="password")
 
     # Use st.sidebar.button to create a button in the sidebar
     submit_api_keys = st.sidebar.button("Submit API Keys")
 
     if not submit_api_keys:
         st.title("YouTube Video")
-        st.write("Please submit API keys to proceed.")
+        st.write("Please enter API keys and click on 'Submit API Keys' to proceed.")
     else:
-        openai_api_key = st.sidebar.text_input("Enter OpenAI API Key", type="password")
-        assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key", type="password")
-
         # Check if both API keys are provided
         if not assemblyai_api_key or not openai_api_key:
             st.error("Error: Both OpenAI and AssemblyAI API keys are required. Please fill in both API keys.")
