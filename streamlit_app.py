@@ -15,27 +15,30 @@ openai.api_key= os.environ.get("openai")
 
 def video_audio(link):
 
-    yt = YouTube(link)
+    try:
+        yt = YouTube(link)
+        stream = yt.streams.filter(only_audio=True).first()
 
-    stream = yt.streams.filter(only_audio=True).first()
+        # Download the audio stream
+        stream.download()
 
-    # Download the audio stream
-    stream.download()
+        # Original file name
+        original_file = stream.default_filename
 
-    # Original file name
-    original_file = stream.default_filename
+        # Specify the desired file name for the saved audio
+        desired_file_name = "video_audio.mp3"
 
-    # Specify the desired file name for the saved audio
-    desired_file_name = "video_audio.mp3"
+        # Rename the file to the desired file name
+        os.rename(original_file, desired_file_name)
 
-    # Rename the file to the desired file name
-    os.rename(original_file, desired_file_name)
-    
-    st.write("Audio generated")
-    st.write("")
-    st.write("Starting transcription, which may take additional time...")
-    return desired_file_name
+        st.write("Audio generated")
+        st.write("")
+        st.write("Starting transcription, which may take additional time...")
+        return desired_file_name
 
+    except Exception as e:
+        st.write(f"Error processing YouTube link {link}: {e}")
+        return None
 def split_string_into_chunks(input_string, max_chunk_length=9000):
     if len(input_string) <= max_chunk_length:
         return [input_string]  # Return the string as a single element list
