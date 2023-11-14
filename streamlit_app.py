@@ -14,6 +14,10 @@ aai.settings.api_key =  os.environ.get("ASSEMBLYAI_API_KEY")
 openai.api_key= os.environ.get("openai")
 
 def video_audio(link):
+    if not link:
+        raise ValueError("Error: YouTube link is empty. Please provide a valid YouTube link.")
+
+    print("Processing YouTube link:", link)
 
     try:
         yt = YouTube(link)
@@ -37,8 +41,8 @@ def video_audio(link):
         return desired_file_name
 
     except Exception as e:
-        st.write(f"Error processing YouTube link {link}: {e}")
-        return None
+        raise ValueError(f"Error processing YouTube link {link}: {e}")
+
 def split_string_into_chunks(input_string, max_chunk_length=9000):
     if len(input_string) <= max_chunk_length:
         return [input_string]  # Return the string as a single element list
@@ -219,7 +223,6 @@ def get_binary_file_downloader_html(bin_data, file_label='File'):
     
 
 def main():
-    # Add a sidebar for API keys
     st.sidebar.header("API Keys")
     assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key")
     openai_api_key = st.sidebar.text_input("Enter OpenAI API Key")
@@ -227,31 +230,29 @@ def main():
     # Set the API keys
     aai.settings.api_key = assemblyai_api_key
     openai.api_key = openai_api_key
-    
+
     st.title("YouTube to doc")
-
     num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
-
     text_boxes = []
+
     for i in range(num_text_boxes):
         text_boxes.append(st.text_input(f"YouTube Link: {i+1}"))
 
-        
-    # Add a button to download the DataFrame as a CSV file
     if st.button('Send'):
-        csv_file,en,hi=video_list(text_boxes)
-        # Read data from the CSV file
-        finall=[csv_file,en,hi]
-        # Offer the CSV string for download
-        zip_file_path = zipping(finall)
-       
-        with open(zip_file_path, 'rb') as f:
-           st.download_button('Download Zip', f, file_name='archive.zip')
-                                  
-                
-               
-        
+        try:
+            # Check if any link is empty
+            if any(not link for link in text_boxes):
+                raise ValueError("Error: YouTube link is empty. Please provide valid YouTube links.")
 
+            csv_file, en, hi = video_list(text_boxes)
+            finall = [csv_file, en, hi]
+            zip_file_path = zipping(finall)
+
+            with open(zip_file_path, 'rb') as f:
+                st.download_button('Download Zip', f, file_name='archive.zip')
+
+        except ValueError as ve:
+            st.exception(ve)
 
 if __name__ == "__main__":
     main()
