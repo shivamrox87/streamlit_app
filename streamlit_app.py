@@ -252,7 +252,7 @@ def main():
                 st.download_button('Download Zip', f, file_name='archive.zip')
 
         except ValueError as ve:
-            st.exception(ve)
+            st.error(ve)
 
 if __name__ == "__main__":
     main()
