@@ -226,8 +226,13 @@ def main():
     st.sidebar.header("API Keys")
     assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key")
     openai_api_key = st.sidebar.text_input("Enter OpenAI API Key")
-
+    
+    # Check if both API keys are provided
+    if not assemblyai_api_key or not openai_api_key:
+        st.error("Error: Both OpenAI and AssemblyAI API keys are required. Please fill in both API keys.")
+        sys.exit("Program terminated.")
     # Set the API keys
+    
     aai.settings.api_key = assemblyai_api_key
     openai.api_key = openai_api_key
 
