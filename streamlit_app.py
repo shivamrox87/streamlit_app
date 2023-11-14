@@ -266,4 +266,4 @@ def main():
             sys.exit("Program terminated.")
 
 if __name__ == "__main__":
-
+    main()
