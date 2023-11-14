@@ -1,5 +1,5 @@
+streamlit
 pytube
 openai
 assemblyai
 whsiper
-streamlit
