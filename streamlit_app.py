@@ -13,20 +13,6 @@ aai.settings.api_key =  os.environ.get("ASSEMBLYAI_API_KEY")
 
 openai.api_key= os.environ.get("openai")
 
-with st.sidebar:
-    st.title('🤗💬 HugChat')
-    if ('EMAIL' in st.secrets) and ('PASS' in st.secrets):
-        st.success('HuggingFace Login credentials already provided!', icon='✅')
-        hf_email = st.secrets['EMAIL']
-        hf_pass = st.secrets['PASS']
-    else:
-        hf_email = st.text_input('Enter E-mail:', type='password')
-        hf_pass = st.text_input('Enter password:', type='password')
-        if not (hf_email and hf_pass):
-            st.warning('Please enter your credentials!', icon='⚠️')
-        else:
-            st.success('Proceed to entering your prompt message!', icon='👉')
-    st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-an-llm-powered-chatbot-with-streamlit/)!')
 def video_audio(link):
 
     yt = YouTube(link)
@@ -230,6 +216,15 @@ def get_binary_file_downloader_html(bin_data, file_label='File'):
     
 
 def main():
+    # Add a sidebar for API keys
+    st.sidebar.header("API Keys")
+    assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key")
+    openai_api_key = st.sidebar.text_input("Enter OpenAI API Key")
+
+    # Set the API keys
+    aai.settings.api_key = assemblyai_api_key
+    openai.api_key = openai_api_key
+    
     st.title("YouTube to doc")
 
     num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
