@@ -226,24 +226,24 @@ def main():
     st.sidebar.header("API Keys")
     assemblyai_api_key = st.sidebar.text_input("Enter AssemblyAI API Key")
     openai_api_key = st.sidebar.text_input("Enter OpenAI API Key")
-    
+
     # Check if both API keys are provided
     if not assemblyai_api_key or not openai_api_key:
         st.error("Error: Both OpenAI and AssemblyAI API keys are required. Please fill in both API keys.")
         sys.exit("Program terminated.")
+
     # Set the API keys
-    
     aai.settings.api_key = assemblyai_api_key
     openai.api_key = openai_api_key
 
-    st.title("YouTube to doc")
-    num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
-    text_boxes = []
+    # Add a button to initiate processing
+    if st.sidebar.button('Process YouTube Links'):
+        num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
+        text_boxes = []
 
-    for i in range(num_text_boxes):
-        text_boxes.append(st.text_input(f"YouTube Link: {i+1}"))
+        for i in range(num_text_boxes):
+            text_boxes.append(st.text_input(f"YouTube Link: {i+1}"))
 
-    if st.button('Send'):
         try:
             # Check if any link is empty
             if any(not link for link in text_boxes):
@@ -258,6 +258,12 @@ def main():
 
         except ValueError as ve:
             st.error(ve)
+        except openai.error.ServiceUnavailableError:
+            st.error("Error: The OpenAI service is currently unavailable. Please try again later.")
+            sys.exit("Program terminated.")
+        except Exception as e:
+            st.error(f"Error: {e}")
+            sys.exit("Program terminated.")
 
 if __name__ == "__main__":
-    main()
+
