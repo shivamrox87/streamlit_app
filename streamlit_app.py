@@ -230,40 +230,37 @@ def main():
     # Check if both API keys are provided
     if not assemblyai_api_key or not openai_api_key:
         st.error("Error: Both OpenAI and AssemblyAI API keys are required. Please fill in both API keys.")
-        sys.exit("Program terminated.")
+    else:
+        # Set the API keys
+        aai.settings.api_key = assemblyai_api_key
+        openai.api_key = openai_api_key
 
-    # Set the API keys
-    aai.settings.api_key = assemblyai_api_key
-    openai.api_key = openai_api_key
+        # Add a button to initiate processing
+        if st.sidebar.button('Process YouTube Links'):
+            num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
+            text_boxes = []
 
-    # Add a button to initiate processing
-    if st.sidebar.button('Process YouTube Links'):
-        num_text_boxes = st.number_input("Number of links", min_value=1, step=1)
-        text_boxes = []
+            for i in range(num_text_boxes):
+                text_boxes.append(st.text_input(f"YouTube Link: {i+1}"))
 
-        for i in range(num_text_boxes):
-            text_boxes.append(st.text_input(f"YouTube Link: {i+1}"))
+            try:
+                # Check if any link is empty
+                if any(not link for link in text_boxes):
+                    raise ValueError("Error: YouTube link is empty. Please provide valid YouTube links.")
 
-        try:
-            # Check if any link is empty
-            if any(not link for link in text_boxes):
-                raise ValueError("Error: YouTube link is empty. Please provide valid YouTube links.")
+                csv_file, en, hi = video_list(text_boxes)
+                finall = [csv_file, en, hi]
+                zip_file_path = zipping(finall)
 
-            csv_file, en, hi = video_list(text_boxes)
-            finall = [csv_file, en, hi]
-            zip_file_path = zipping(finall)
+                with open(zip_file_path, 'rb') as f:
+                    st.download_button('Download Zip', f, file_name='archive.zip')
 
-            with open(zip_file_path, 'rb') as f:
-                st.download_button('Download Zip', f, file_name='archive.zip')
-
-        except ValueError as ve:
-            st.error(ve)
-        except openai.error.ServiceUnavailableError:
-            st.error("Error: The OpenAI service is currently unavailable. Please try again later.")
-            sys.exit("Program terminated.")
-        except Exception as e:
-            st.error(f"Error: {e}")
-            sys.exit("Program terminated.")
+            except ValueError as ve:
+                st.error(ve)
+            except openai.error.ServiceUnavailableError:
+                st.error("Error: The OpenAI service is currently unavailable. Please try again later.")
+            except Exception as e:
+                st.error(f"Error: {e}")
 
 if __name__ == "__main__":
     main()
